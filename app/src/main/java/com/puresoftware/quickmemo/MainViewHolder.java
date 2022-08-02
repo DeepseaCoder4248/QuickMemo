@@ -136,16 +136,11 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
                 for (Memo memo : datasAll) {
                     // filter 대상
 
+                    // https://stackoverflow.com/questions/60428610/error-java-lang-nullpointerexception-attempt-to-invoke-virtual-method-boolean
                     if (memo.getTitle().contains(filterPattern) ||
                             sdf.format(memo.getTimestamp()).contains(filterPattern)
                             || memo.getContent().contains(filterPattern)) { // 시간이나
                         filtered.add(memo);
-
-//                        holder.tvContentLeft.setHtml(datas.get(position).content);
-//                        holder.tvContentLeft.setInputEnabled(false);
-//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd a H:mm", Locale.KOREA);
-//                        holder.tvDateLeft.setText(sdf.format(datas.get(position).timestamp));
-//                        sdf = null;
 
                         Log.i(TAG, "memo.getTitle():" + memo.getTitle());
                         Log.i(TAG, "memo.getTime()" + String.valueOf(new Date(memo.getTimestamp())));
@@ -311,6 +306,12 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
     // MainActivity에서 데이터 가져오기
     public void setArrayData(Memo memo) {
         datas.add(memo);
+    }
+
+    // MainActivity에서 데이터 가져오기
+    public void setArrayDatas(ArrayList<Memo> memos) {
+        datas = new ArrayList<>();
+        datas = memos;
     }
 
     public void filterStart(List<Memo> memos) {

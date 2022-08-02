@@ -111,13 +111,16 @@ public class MainActivity extends Activity {
 
     // adapter
     List<Memo> memos;
+    List<Memo> trashMemos;
     List<Memo> starList;
+    List<Memo> folderMemos;
     List<UserFolder> folders;
     UserFolder folder;
     UserFolderAdapter userFolderAdapter;
     Memo lastMemo;
     Memo secondMemo;
     Memo memo;
+    Memo folderMemo;
     TextView tvMainCardCount;
 
     // select mode
@@ -206,6 +209,11 @@ public class MainActivity extends Activity {
             editor.commit();
         }
 
+        // 드로우어블 메뉴의 가장 초기모드
+        linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
+        linDrawerImpo.setBackground(null);
+        linDrawerTrash.setBackground(null);
+
         // RoomDB 메모내용 불러오기
         AppDatabase db = AppDatabase.getInstance(this);
         MemoDao memoDao = db.dao();
@@ -214,8 +222,9 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 memos = new ArrayList<>(); // unSupportedle머시기exception으로 인해 추가.
-//                memos = memoDao.getAll();
-                memos = memoDao.getNotTrashAll(false);
+                trashMemos = new ArrayList<>();
+                trashMemos = memoDao.getAll(); // 휴지통 포함해서 받아옴.
+                memos = memoDao.getNotTrashAll(false); // 휴지통이 있는 거 빼고 받아옴.
 
                 // 배포할 때에는 이 코드 끄기.
                 for (Memo memo : memos) {
@@ -864,15 +873,10 @@ public class MainActivity extends Activity {
                     }
                 }).start();
 
-                linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
-                linDrawerImpo.setBackground(null);
-                linDrawerTrash.setBackground(null);
-
                 // 드로우어블 뒤의 모든게 터치되므로 추가함.
                 drawerView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
                     }
                 });
 
@@ -881,23 +885,51 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View view) {
 
+                        adapter.datas = new ArrayList<>();
+                        for (int i = 0; i < memos.size(); i++) {
+
+                            memo = new Memo();
+                            memo.title = memos.get(i).title;
+                            memo.content = memos.get(i).content;
+                            memo.timestamp = memos.get(i).timestamp;
+                            memo.lock = memos.get(i).lock;
+                            memo.star = memos.get(i).star;
+
+                            adapter.setArrayData(memo);
+                        }
+                        adapter.notifyDataSetChanged();
+
+                        // 드로우어블 메뉴의 메인
+                        linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
+                        linDrawerImpo.setBackground(null);
+                        linDrawerTrash.setBackground(null);
                         menuNavi.closeDrawer(drawerView);
-                        adapter.getFilter().filter("메인");
+                        tvMainCardCount.setText(memos.size() + "개의 메모");
+//                        tvDrawerMain.setText(memos.size() + "");
+//                        tvMainCardCount.setText(memos.size() + "개의 메모");
 
-                        Log.i("gugu", "메인");
+                        Log.i(TAG, "메인");
                     }
-
-
                 });
 
                 linDrawerImpo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
-                        menuNavi.closeDrawer(drawerView);
-                        adapter.getFilter().filter("중요");
+                        // 어댑터로 업데이트
+                        folderMemos = new ArrayList<>();
+                        folderMemos = memos.stream().filter(memo -> memo.star == true).collect(Collectors.toList());
+                        adapter.setArrayDatas((ArrayList<Memo>) folderMemos);
+                        adapter.notifyDataSetChanged();
 
-                        Log.i("gugu", "중요");
+                        // 드로우어블 메뉴의 중요
+                        linDrawerMain.setBackground(null);
+                        linDrawerImpo.setBackgroundResource(R.drawable.round_retengle_impo);
+                        linDrawerTrash.setBackground(null);
+                        menuNavi.closeDrawer(drawerView);
+                        tvMainCardCount.setText(starList.size() + "개의 메모");
+
+                        Log.i(TAG, "중요");
                     }
                 });
 
@@ -905,8 +937,18 @@ public class MainActivity extends Activity {
                     @Override
                     public void onClick(View view) {
 
+                        // 어댑터로 업데이트
+                        folderMemos = new ArrayList<>();
+                        folderMemos = trashMemos.stream().filter(memo -> memo.isTrash == true).collect(Collectors.toList());
+                        adapter.setArrayDatas((ArrayList<Memo>) folderMemos);
+                        adapter.notifyDataSetChanged();
+
+                        // 드로우어블 메뉴의 중요
+                        linDrawerMain.setBackground(null);
+                        linDrawerImpo.setBackground(null);
+                        linDrawerTrash.setBackgroundResource(R.drawable.round_retengle_trash);
                         menuNavi.closeDrawer(drawerView);
-                        adapter.getFilter().filter("메인");
+                        tvMainCardCount.setText(folderMemos.size() + "개의 메모");
 
                         Log.i("gugu", "휴지통");
                     }
