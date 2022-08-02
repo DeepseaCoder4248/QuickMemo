@@ -60,7 +60,11 @@ public class WriteActivity extends AppCompatActivity {
     boolean cancelLineSwitch = false;
     boolean underLineSwitch = false;
 
+    String title;
     String content;
+    boolean star;
+    boolean lock;
+    long timeStamp;
 
     String TAG = WriteActivity.class.getSimpleName();
 
@@ -102,11 +106,11 @@ public class WriteActivity extends AppCompatActivity {
                     }
                 });
 
-                String title = edtTitle.getText().toString().trim();
-                String content = richEditor.getHtml();
-                boolean star = starSwitch;
-                boolean lock = lockSwitch;
-                long timeStamp = System.currentTimeMillis();
+                title = edtTitle.getText().toString().trim();
+                content = richEditor.getHtml();
+                star = starSwitch;
+                lock = lockSwitch;
+                timeStamp = System.currentTimeMillis();
 
                 // 외부라이브러리에서 TextNull은 TextUtils.isEmpty로 해야 함.
                 if (title.trim().equals("") && TextUtils.isEmpty(content)) {
@@ -121,11 +125,16 @@ public class WriteActivity extends AppCompatActivity {
                         public void run() {
                             Memo memo = new Memo();
 
+                            if (content == null) {
+                                content = "";
+                            }
+
                             memo.title = title;
                             memo.content = content;
                             memo.lock = lock;
                             memo.star = star;
                             memo.timestamp = timeStamp;
+                            memo.folder = "메인";
                             memoDao.insert(memo);
 
                             Log.i(TAG, "memoData:" + memo.toString());

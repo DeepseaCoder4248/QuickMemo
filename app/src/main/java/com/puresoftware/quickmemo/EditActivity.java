@@ -61,6 +61,12 @@ public class EditActivity extends AppCompatActivity {
     boolean cancelLineSwitch = false;
     boolean underLineSwitch = false;
 
+    String afterTitle;
+    String afterContent;
+    boolean afterStar;
+    boolean afterLock;
+    long afterTimeStamp;
+
     String TAG = EditActivity.class.getSimpleName();
 
     @Override
@@ -123,11 +129,11 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String afterTitle = edtTitle.getText().toString();
-                String afterContent = richEditor.getHtml();
-                boolean afterStar = starSwitch;
-                boolean afterLock = lockSwitch;
-                long afterTimeStamp = System.currentTimeMillis();
+                afterTitle = edtTitle.getText().toString();
+                afterContent = richEditor.getHtml();
+                afterStar = starSwitch;
+                afterLock = lockSwitch;
+                afterTimeStamp = System.currentTimeMillis();
 
                 if (afterTitle.trim().isEmpty() && afterContent.trim().isEmpty()) {
                     Intent intent = new Intent(EditActivity.this, MainActivity.class);
@@ -140,6 +146,10 @@ public class EditActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             Memo memo = new Memo();
+
+                            if (afterContent == null) {
+                                afterContent = "";
+                            }
 
                             memo.title = afterTitle;
                             memo.content = afterContent;

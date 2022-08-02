@@ -876,16 +876,27 @@ public class MainActivity extends Activity {
                     }
                 });
 
+                // 할일
                 linDrawerMain.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        menuNavi.closeDrawer(drawerView);
+                        adapter.getFilter().filter("메인");
+
                         Log.i("gugu", "메인");
                     }
+
+
                 });
 
                 linDrawerImpo.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        menuNavi.closeDrawer(drawerView);
+                        adapter.getFilter().filter("중요");
+
                         Log.i("gugu", "중요");
                     }
                 });
@@ -893,6 +904,10 @@ public class MainActivity extends Activity {
                 linDrawerTrash.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        menuNavi.closeDrawer(drawerView);
+                        adapter.getFilter().filter("메인");
+
                         Log.i("gugu", "휴지통");
                     }
                 });
