@@ -1,62 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/view_main_card"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="5dp">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_card_bg"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@drawable/home_memo_ex"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <ImageView
-        android:id="@+id/iv_main_card"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/home_memo_ex"
-        android:visibility="visible"></ImageView>
+        <LinearLayout
+            android:id="@+id/linearLayout12"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="18dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-        android:id="@+id/linearLayout12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="vertical">
+            <TextView
+                android:id="@+id/tv_main_card_date_left"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="2020.11.1 5AM 10Min"
+                android:textAlignment="viewStart"
+                android:textColor="#FF7373"
+                android:textSize="12sp"
+                tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/tv_main_card_date_left"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="2020.11.1 5AM 10Min"
-            android:textAlignment="viewStart"
-            android:textColor="#FF7373"
-            android:textSize="12sp" />
+            <TextView
+                android:id="@+id/tv_main_card_title_left"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:text="가馬娘あㅁAs@.'!*8가"
+                android:textAlignment="viewStart"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_main_card_title_left"
-            android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:text="가馬娘あㅁAs@.'!*8가"
-            android:textAlignment="viewStart"
-            android:textColor="#000000"
-            android:textSize="20sp" />
-    </LinearLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="68dp" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline9">
 
-        <jp.wasabeef.richeditor.RichEditor
-            android:id="@+id/tv_main_card_content"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <jp.wasabeef.richeditor.RichEditor
+                android:id="@+id/tv_main_card_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
 
-    <!-- delete icon -->
-    <ImageView
-        android:id="@+id/iv_main_card_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/delete"
-        android:visibility="gone"></ImageView>
-</FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

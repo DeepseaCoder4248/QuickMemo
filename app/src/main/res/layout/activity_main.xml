@@ -174,8 +174,7 @@
                 android:background="#F1F1F1"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:visibility="gone"
-                >
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/btn_main_sel_folder"
@@ -210,14 +209,15 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rec_main_card"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center|top"
             android:textAlignment="center"
-
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        </androidx.recyclerview.widget.RecyclerView>
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:spanCount="2"
+            tools:itemCount="12"
+            tools:listitem="@layout/main_card_item" />
 
         <ImageView
             android:id="@+id/v_main_empty"
@@ -225,8 +225,7 @@
             android:layout_height="match_parent"
             android:src="@drawable/main___empty"
             android:visibility="gone"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-            ></ImageView>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -1,34 +1,24 @@
 package com.puresoftware.quickmemo;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.puresoftware.quickmemo.artifacts.HomeDO;
 import com.puresoftware.quickmemo.room.Memo;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -37,12 +27,13 @@ import jp.wasabeef.richeditor.RichEditor;
 
 public class MainViewHolder extends RecyclerView.ViewHolder {
 
-    FrameLayout viewMainCard; // 메인카드
+    ConstraintLayout viewMainCard; // 메인카드
     TextView tvDateLeft; // 날짜
     TextView tvTitleLeft; // 타이틀
     RichEditor tvContentLeft; // 내용
-    ImageView ivMainCard; // 백그라운드 이미지
-    ImageView ivMainCardDelete; // 삭제모드 백그라운드 이미지
+    ConstraintLayout cardBgLayout; // 메인 카드 백그라운드 이미지
+    //    ImageView ivMainCard; // 백그라운드 이미지
+//    ImageView ivMainCardDelete; // 삭제모드 백그라운드 이미지
     String TAG = MainViewHolder.class.getSimpleName();
 
     ArrayList<Memo> datas = new ArrayList<>();
@@ -57,14 +48,16 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
         tvTitleLeft = itemView.findViewById(R.id.tv_main_card_title_left);
         tvDateLeft = itemView.findViewById(R.id.tv_main_card_date_left);
         tvContentLeft = itemView.findViewById(R.id.tv_main_card_content);
-        ivMainCard = itemView.findViewById(R.id.iv_main_card);
-        ivMainCardDelete = itemView.findViewById(R.id.iv_main_card_delete);
+        cardBgLayout = itemView.findViewById(R.id.main_card_bg);
+//        ivMainCard = itemView.findViewById(R.id.iv_main_card);
+//        ivMainCardDelete = itemView.findViewById(R.id.iv_main_card_delete);
         viewMainCard = itemView.findViewById(R.id.view_main_card);
         tvContentLeft.setFocusable(false);
+        tvContentLeft.setBackgroundColor(Color.TRANSPARENT);
 
 
         // click 구현부, 데이터들은 애초에 Main에서 처리.
-        ivMainCard.setOnClickListener(new View.OnClickListener() {
+        viewMainCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = getAdapterPosition();
@@ -76,7 +69,7 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        ivMainCard.setOnLongClickListener(new View.OnLongClickListener() {
+        viewMainCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 int position = getAdapterPosition();
@@ -102,6 +95,11 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd a H:mm", Locale.KOREA); // 날짜 받아오기 위한 것.
 
     MainViewHolder holder;
+    Context context;
+
+    public Adapter(Context context) {
+        this.context = context;
+    }
 
     // search 호출 메소드
     @Override
@@ -136,11 +134,16 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
                 for (Memo memo : datasAll) {
                     // filter 대상
 
-                    // https://stackoverflow.com/questions/60428610/error-java-lang-nullpointerexception-attempt-to-invoke-virtual-method-boolean
                     if (memo.getTitle().contains(filterPattern) ||
                             sdf.format(memo.getTimestamp()).contains(filterPattern)
                             || memo.getContent().contains(filterPattern)) { // 시간이나
                         filtered.add(memo);
+
+//                        holder.tvContentLeft.setHtml(datas.get(position).content);
+//                        holder.tvContentLeft.setInputEnabled(false);
+//                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd a H:mm", Locale.KOREA);
+//                        holder.tvDateLeft.setText(sdf.format(datas.get(position).timestamp));
+//                        sdf = null;
 
                         Log.i(TAG, "memo.getTitle():" + memo.getTitle());
                         Log.i(TAG, "memo.getTime()" + String.valueOf(new Date(memo.getTimestamp())));
@@ -230,7 +233,6 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
 //        }
 //    };
 
-
     // onClick 인터페이스
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
@@ -280,22 +282,28 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
         datas.get(position);
         holder.tvTitleLeft.setText(datas.get(position).title);
 
-        if (datas.get(position).star == false && datas.get(position).lock == false) {
-            holder.ivMainCard.setImageResource(R.drawable.home_memo_ex);
+        if (!datas.get(position).star && !datas.get(position).lock) {
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_ex));
             lockContent(0, holder, datas, position);
 
-        } else if (datas.get(position).star == true && datas.get(position).lock == false) {
-            holder.ivMainCard.setImageResource(R.drawable.home_memo_impo);
+        } else if (datas.get(position).star && !datas.get(position).lock) {
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_impo));
             lockContent(0, holder, datas, position);
 
-        } else if (datas.get(position).star == false && datas.get(position).lock == true) {
-            holder.ivMainCard.setImageResource(R.drawable.home_memo_ex_lock);
+        } else if (!datas.get(position).star && datas.get(position).lock) {
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_ex_lock));
             lockContent(1, holder, datas, position);
 
-        } else if (datas.get(position).star == true && datas.get(position).lock == true) {
-            holder.ivMainCard.setImageResource(R.drawable.home_memo_impo_lock);
+        } else if (datas.get(position).star && datas.get(position).lock) {
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_impo_lock));
             lockContent(1, holder, datas, position);
         }
+    }
+
+    // MainActivity에서 데이터 가져오기
+    public void setArrayDatas(ArrayList<Memo> memos) {
+        datas = new ArrayList<>();
+        datas = memos;
     }
 
     @Override
@@ -306,12 +314,6 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
     // MainActivity에서 데이터 가져오기
     public void setArrayData(Memo memo) {
         datas.add(memo);
-    }
-
-    // MainActivity에서 데이터 가져오기
-    public void setArrayDatas(ArrayList<Memo> memos) {
-        datas = new ArrayList<>();
-        datas = memos;
     }
 
     public void filterStart(List<Memo> memos) {

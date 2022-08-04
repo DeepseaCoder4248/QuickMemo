@@ -1,6 +1,7 @@
 package com.puresoftware.quickmemo;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.puresoftware.quickmemo.artifacts.Folder;
 import com.puresoftware.quickmemo.drawer.UserFolderAdapter;
 import com.puresoftware.quickmemo.room.AppDatabase;
 import com.puresoftware.quickmemo.room.Memo;
@@ -54,7 +56,7 @@ import java.util.stream.Collectors;
 import jp.wasabeef.richeditor.RichEditor;
 
 public class MainActivity extends Activity {
-
+    MainActivity activity;
 
     // top
     LinearLayout linTopcard1;
@@ -154,6 +156,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        activity = this;
 
         btnMenu = findViewById(R.id.btn_main_menu);
         menuNavi = (DrawerLayout) findViewById(R.id.main_drawer_layout);
@@ -452,7 +455,7 @@ public class MainActivity extends Activity {
                 = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
-        adapter = new Adapter();
+        adapter = new Adapter(getBaseContext());
 
         if (memos.size() > 0) {
             //            list.stream().filter(t->t.length()>5)
@@ -536,11 +539,11 @@ public class MainActivity extends Activity {
 
                     if (!set.contains(String.valueOf(position))) {
                         set.add(String.valueOf(position));
-                        holder.ivMainCardDelete.setVisibility(View.VISIBLE);
+                        holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(getBaseContext(), R.drawable.delete));
 
                     } else {
                         set.remove(String.valueOf(position));
-                        holder.ivMainCardDelete.setVisibility(View.GONE);
+                        holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(getBaseContext(), R.drawable.home_memo_ex));
                     }
                     tvSelCount.setText(set.size() + "개 선택됨");
 
@@ -730,7 +733,7 @@ public class MainActivity extends Activity {
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            adapter = new Adapter();
+                                            adapter = new Adapter(getBaseContext());
 
                                             if (memos.size() > 0) {
                                                 tvMainCardCount.setText(memos.size() + "개의 메모");
@@ -840,9 +843,6 @@ public class MainActivity extends Activity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                menuNavi.openDrawer(drawerView);
-
-
                 // 설정 버튼
                 btnDrawerSettings.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -955,6 +955,7 @@ public class MainActivity extends Activity {
                 });
 
                 userFolderAdapter = new UserFolderAdapter();
+                userFolderAdapter.setActivity(activity);
                 folders = new ArrayList<>();
 
                 new Thread(new Runnable() {
@@ -962,8 +963,17 @@ public class MainActivity extends Activity {
                     public void run() {
                         folders = memoDao.getFolderAll();
 
+
                         for (UserFolder folder : folders) {
-                            userFolderAdapter.addItem(folder);
+                            int folderCnt = memoDao.getFolderCount(folder.title);
+                            Log.d(TAG, "Count: " + folderCnt);
+                            Folder item = new Folder(folder, folderCnt);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    userFolderAdapter.addItem(item);
+                                }
+                            });
                         }
                     }
                 }).start();
@@ -992,6 +1002,8 @@ public class MainActivity extends Activity {
                         return true; // 숏 터치와 롱터치 구분하는것.
                     }
                 });
+
+                menuNavi.openDrawer(drawerView);
             }
         });
 
@@ -1030,7 +1042,8 @@ public class MainActivity extends Activity {
 
                 // 이 반복문과 이 구조를 잊지 말것. 위치값을 받아오는 연습이 필요. , 뒤로 누르면 select된 이미지 모두 제거.
                 for (int i = 0; i < set.size(); i++) {
-                    holder.ivMainCardDelete.setVisibility(View.GONE);
+                    assert holder != null;
+                    holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(getBaseContext(), R.drawable.home_memo_ex));
                     holder = (MainViewHolder) recyclerView.findViewHolderForAdapterPosition(Integer.parseInt(set.get(i)));
                 }
 
@@ -1087,8 +1100,8 @@ public class MainActivity extends Activity {
                     // add면 새 데이터 넣는다.
                     folder.setTitle(edtFolderTitle.getText().toString());
                     folder.setTimestamp(System.currentTimeMillis());
-                    folder.setCount(0);
-                    adapter.addItem(folder);
+                    Folder item = new Folder(folder, 0);
+                    adapter.addItem(item);
                     new Thread(new Runnable() {
                         @Override
                         public void run() {

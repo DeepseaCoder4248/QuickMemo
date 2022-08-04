@@ -1,6 +1,8 @@
 package com.puresoftware.quickmemo.drawer;
 
+import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.puresoftware.quickmemo.R;
+import com.puresoftware.quickmemo.artifacts.Folder;
+import com.puresoftware.quickmemo.room.AppDatabase;
+import com.puresoftware.quickmemo.room.MemoDao;
 import com.puresoftware.quickmemo.room.UserFolder;
 
 import java.util.ArrayList;
@@ -19,8 +24,13 @@ public class UserFolderAdapter extends BaseAdapter {
 
     String TAG = UserFolderAdapter.class.getSimpleName();
 
-    List<com.puresoftware.quickmemo.room.UserFolder> folderList = new ArrayList<>();
+    List<Folder> folderList = new ArrayList<>();
     Context context;
+    Activity activity;
+
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public int getCount() {
@@ -52,12 +62,21 @@ public class UserFolderAdapter extends BaseAdapter {
         TextView tvDrawerUserCount = view.findViewById(R.id.tv_main_drawer_user_count);
         linDrawerUserFolder.setBackground(null);
 
-        UserFolder folder = folderList.get(i);
+        Folder folderItem = folderList.get(i);
+        UserFolder folder = folderItem.getFolder();
+        Log.d(TAG, "Folder: "+folderItem);
 
+        AppDatabase db = AppDatabase.getInstance(context);
+        MemoDao memoDao = db.dao();
 
+        AsyncTask.execute(() -> {
+            int cnt = memoDao.getFolderCount(folder.title);
 
-        tvDrawerUserTitle.setText(folder.getTitle());
-        tvDrawerUserCount.setText(folder.getCount() + "");
+            activity.runOnUiThread(() -> {
+                tvDrawerUserTitle.setText(folder.getTitle());
+                tvDrawerUserCount.setText(String.valueOf(cnt));
+            });
+        });
 
 //        linDrawerUserFolder.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -79,8 +98,9 @@ public class UserFolderAdapter extends BaseAdapter {
         return view;
     }
 
-    public void addItem(com.puresoftware.quickmemo.room.UserFolder folder) {
+    public void addItem(Folder folder) {
         folderList.add(folder);
+        notifyDataSetChanged();
     }
 
     // 리스트 비우기

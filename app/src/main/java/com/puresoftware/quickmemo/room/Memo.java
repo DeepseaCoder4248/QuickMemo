@@ -28,7 +28,7 @@ public class Memo {
     @ColumnInfo(name = "trash")
     public boolean isTrash;
 
-    @ColumnInfo(name = "folder")
+    @ColumnInfo(name = "folder_uid")
     public String folder;
 
     public int getUid() {

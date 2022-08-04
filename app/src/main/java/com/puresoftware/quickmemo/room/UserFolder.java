@@ -13,9 +13,6 @@ public class UserFolder {
     @ColumnInfo(name = "title")
     public String title;
 
-    @ColumnInfo(name = "count")
-    public int count;
-
     @ColumnInfo(name = "time")
     public long timestamp;
 
@@ -35,14 +32,6 @@ public class UserFolder {
         this.title = title;
     }
 
-    public int getCount() {
-        return count;
-    }
-
-    public void setCount(int count) {
-        this.count = count;
-    }
-
     public long getTimestamp() {
         return timestamp;
     }
@@ -56,7 +45,6 @@ public class UserFolder {
         return "UserFolder{" +
                 "uid=" + uid +
                 ", title='" + title + '\'' +
-                ", count=" + count +
                 ", timestamp=" + timestamp +
                 '}';
     }
