@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.puresoftware.quickmemo.MainActivity;
 import com.puresoftware.quickmemo.R;
 import com.puresoftware.quickmemo.artifacts.Folder;
 import com.puresoftware.quickmemo.room.AppDatabase;
@@ -27,6 +28,7 @@ public class UserFolderAdapter extends BaseAdapter {
     List<Folder> folderList = new ArrayList<>();
     Context context;
     Activity activity;
+    LinearLayout linDrawerUserFolder;
 
     public void setActivity(Activity activity) {
         this.activity = activity;
@@ -57,14 +59,29 @@ public class UserFolderAdapter extends BaseAdapter {
             view = LayoutInflater.from(context).inflate(R.layout.main_drawer_select_set_item, viewGroup, false);
         }
 
-        LinearLayout linDrawerUserFolder = view.findViewById(R.id.lin_main_drawer_user_folder);
+        linDrawerUserFolder = view.findViewById(R.id.lin_main_drawer_user_folder);
         TextView tvDrawerUserTitle = view.findViewById(R.id.tv_main_drawer_user_title);
         TextView tvDrawerUserCount = view.findViewById(R.id.tv_main_drawer_user_count);
-        linDrawerUserFolder.setBackground(null);
 
         Folder folderItem = folderList.get(i);
         UserFolder folder = folderItem.getFolder();
-        Log.d(TAG, "Folder: "+folderItem);
+
+        Log.d(TAG, "Map: "+MainActivity.folderSelect);
+        // notifyDataSetChanged 와 static 변수 메모리 관련 서로 꼬임으로 인해
+        // 키에 없을 경우 색을 transparent 로 지정
+        if (MainActivity.folderSelect.containsKey(folder.title)) {
+            boolean isSelected = MainActivity.folderSelect.get(folder.title);
+            if (isSelected == true) {
+                setBackground(true);
+            } else {
+                setBackground(false);
+            }
+        } else {
+            setBackground(false);
+        }
+
+
+        Log.d(TAG, "Folder: " + folderItem);
 
         AppDatabase db = AppDatabase.getInstance(context);
         MemoDao memoDao = db.dao();
@@ -110,5 +127,14 @@ public class UserFolderAdapter extends BaseAdapter {
 
     public void deleteItem(UserFolder folder) {
         folderList.remove(folder);
+    }
+
+    public void setBackground(boolean type) {
+
+        if (type == false) {
+            linDrawerUserFolder.setBackground(null);
+        } else {
+            linDrawerUserFolder.setBackgroundResource(R.drawable.round_retengle_folder);
+        }
     }
 }

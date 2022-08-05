@@ -89,6 +89,7 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
     public String TAG = Adapter.class.getSimpleName();
 
     // 데이터
+    Memo dataDummy = new Memo(); // 폴더 받기전 머시기
     ArrayList<Memo> datas = new ArrayList<>(); // sel
     ArrayList<Memo> datasAll; // all
     ArrayList<Memo> filtered = new ArrayList<>(); // 필터링 된 데이터
@@ -279,6 +280,7 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
         holder.listener = onItemClickListener; // 내만 이렇게 하는 듯.
         holder.longListener = onItemLongClickListener; // 내만 이렇게 하는 듯.
 
+        dataDummy = datas.get(position);
         datas.get(position);
         holder.tvTitleLeft.setText(datas.get(position).title);
 

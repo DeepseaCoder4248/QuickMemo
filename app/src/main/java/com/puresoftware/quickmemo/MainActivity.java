@@ -48,8 +48,10 @@ import org.w3c.dom.Text;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.BlockingDeque;
 import java.util.stream.Collectors;
 
@@ -106,6 +108,8 @@ public class MainActivity extends Activity {
 
     ListView lvDrawerItem;
     ImageView ivDrawerAddFolder;
+
+    public static Map<String, Boolean> folderSelect = new HashMap<>();
 
     // recycler
     RecyclerView recyclerView;
@@ -897,6 +901,7 @@ public class MainActivity extends Activity {
 
                             adapter.setArrayData(memo);
                         }
+                        folderSelect.keySet().forEach(s -> folderSelect.put(s, false));
                         adapter.notifyDataSetChanged();
 
                         // 드로우어블 메뉴의 메인
@@ -926,6 +931,7 @@ public class MainActivity extends Activity {
                         linDrawerMain.setBackground(null);
                         linDrawerImpo.setBackgroundResource(R.drawable.round_retengle_impo);
                         linDrawerTrash.setBackground(null);
+                        folderSelect.keySet().forEach(s -> folderSelect.put(s, false));
                         menuNavi.closeDrawer(drawerView);
                         tvMainCardCount.setText(starList.size() + "개의 메모");
 
@@ -947,6 +953,8 @@ public class MainActivity extends Activity {
                         linDrawerMain.setBackground(null);
                         linDrawerImpo.setBackground(null);
                         linDrawerTrash.setBackgroundResource(R.drawable.round_retengle_trash);
+                        folderSelect.keySet().forEach(s -> folderSelect.put(s, false));
+
                         menuNavi.closeDrawer(drawerView);
                         tvMainCardCount.setText(folderMemos.size() + "개의 메모");
 
@@ -972,6 +980,8 @@ public class MainActivity extends Activity {
                                 @Override
                                 public void run() {
                                     userFolderAdapter.addItem(item);
+
+
                                 }
                             });
                         }
@@ -989,7 +999,25 @@ public class MainActivity extends Activity {
                 lvDrawerItem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        Folder folder = (Folder) userFolderAdapter.getItem(i);
+                        Log.d(TAG, "Item:" + folder.getFolder().title);
+                        folderMemos = memos.stream().filter(memo -> memo.folder.equals(folder.getFolder().title)).collect(Collectors.toList());
+                        Log.d(TAG, "Object " + folderMemos);
 
+                        adapter.setArrayDatas((ArrayList<Memo>) folderMemos);
+                        adapter.notifyDataSetChanged();
+
+                        // 드로우어블 메뉴의 중요
+                        linDrawerMain.setBackground(null);
+                        linDrawerImpo.setBackground(null);
+                        linDrawerTrash.setBackground(null);
+                        for (String s : folderSelect.keySet()) {
+                            folderSelect.put(s, false);
+                        }
+                        folderSelect.put(folder.getFolder().title, true);
+
+                        menuNavi.closeDrawer(drawerView);
+                        tvMainCardCount.setText(starList.size() + "개의 메모");
                     }
                 });
 
