@@ -66,9 +66,10 @@ public class UserFolderAdapter extends BaseAdapter {
         Folder folderItem = folderList.get(i);
         UserFolder folder = folderItem.getFolder();
 
-        Log.d(TAG, "Map: "+MainActivity.folderSelect);
+        Log.d(TAG, "Map: " + MainActivity.folderSelect);
         // notifyDataSetChanged 와 static 변수 메모리 관련 서로 꼬임으로 인해
         // 키에 없을 경우 색을 transparent 로 지정
+
         if (MainActivity.folderSelect.containsKey(folder.title)) {
             boolean isSelected = MainActivity.folderSelect.get(folder.title);
             if (isSelected == true) {
@@ -79,7 +80,6 @@ public class UserFolderAdapter extends BaseAdapter {
         } else {
             setBackground(false);
         }
-
 
         Log.d(TAG, "Folder: " + folderItem);
 

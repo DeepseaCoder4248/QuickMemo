@@ -79,15 +79,7 @@ public class WidgetService extends Service {
     //textLine
     RichEditor richEditor;
 
-    //menuLine
-    TextView btnFontSize;
-    ImageView btnColor;
-    ImageView btnAlignment;
-    ImageView btnBold;
-    ImageView btnCancelLine;
-    ImageView btnUnderLine;
     boolean isInit = false;
-
 
 
     private ViewGroup floatView;
@@ -110,12 +102,12 @@ public class WidgetService extends Service {
         // startForground에러나 bad Notification 관련 에러로 인한 Notification 만듬(숙지 안됨)
         // https://ddolcat.tistory.com/259
         String CHANNEL_ID = "channel_1";
-        NotificationChannel channel = new NotificationChannel(CHANNEL_ID,"Andorid test", NotificationManager.IMPORTANCE_LOW);
-        ((NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Andorid test", NotificationManager.IMPORTANCE_LOW);
+        ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
 
-        Notification notification = new NotificationCompat.Builder(this,CHANNEL_ID)
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("").setContentText("").build();
-        startForeground(2,notification);
+        startForeground(2, notification);
         // https://ddolcat.tistory.com/259
 
 
@@ -229,11 +221,11 @@ public class WidgetService extends Service {
                         }
 
                         // 플로팅으로 writeActivity띄우기
-                        if(!isInit) {
+                        if (!isInit) {
                             isInit = true;
                             LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 
-                            floatView = (ViewGroup) inflater.inflate(R.layout.activity_write, null); // 서비스 실행 시 View 를 새로 Inflate 한다.
+                            floatView = (ViewGroup) inflater.inflate(R.layout.floating_write, null); // 서비스 실행 시 View 를 새로 Inflate 한다.
 //                        Toast.makeText(WidgetService.this, "이것은 액션 업입니다.", Toast.LENGTH_SHORT).show();
                             floatViewLayoutParams = new WindowManager.LayoutParams(
                                     ((int) (width * 0.9f)), // 축소 될때 윈도우 해상도 값. X축
@@ -243,35 +235,24 @@ public class WidgetService extends Service {
                                     PixelFormat.TRANSLUCENT
                             );
 
-                            btnBack = floatView.findViewById(R.id.btn_write_activity_back);
+                            btnBack = floatView.findViewById(R.id.btn_floating_write_back);
                             btnBack.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_back_ios_24));
-                            edtTitle = floatView.findViewById(R.id.edt_write_activity_title);
-                            btnStar = floatView.findViewById(R.id.btn_write_activity_star);
+                            edtTitle = floatView.findViewById(R.id.edt_floating_write_title);
+                            btnStar = floatView.findViewById(R.id.btn_floating_write_star);
                             btnStar.setImageDrawable(getDrawable(R.drawable.ic_write_activity_star_regular));
-                            btnLock = floatView.findViewById(R.id.btn_write_activity_lock);
+                            btnLock = floatView.findViewById(R.id.btn_floating_write_lock);
                             btnLock.setImageDrawable(getDrawable(R.drawable.ic_write_activity_lock_solid));
-                            richEditor = floatView.findViewById(R.id.v_write_activity_richeditor);
-
-                            btnFontSize = (TextView) floatView.findViewById(R.id.btn_write_activity_fontsize);
-                            btnColor = floatView.findViewById(R.id.btn_write_activity_color);
-                            btnColor.setImageDrawable(getDrawable(R.drawable.ic_palette_solid));
-                            btnAlignment = floatView.findViewById(R.id.btn_write_activity_alignment);
-                            btnAlignment.setImageDrawable(getDrawable(R.drawable.ic_align_justify_solid));
-                            btnBold = floatView.findViewById(R.id.btn__write_activity_bold);
-                            btnBold.setImageDrawable(getDrawable(R.drawable.ic_bold_solid));
-                            btnCancelLine = floatView.findViewById(R.id.btn__write_activity_canceline);
-                            btnCancelLine.setImageDrawable(getDrawable(R.drawable.ic_strikethrough_solid));
-                            btnUnderLine = floatView.findViewById(R.id.btn__write_activity_underline);
-                            btnUnderLine.setImageDrawable(getDrawable(R.drawable.ic_underline_solid));
+                            richEditor = floatView.findViewById(R.id.v_floating_write_richeditor);
 
                             // 기본으로 사용할 폰트의 크기
                             richEditor.setFontSize(5);
-
                             floatViewLayoutParams.gravity = Gravity.CENTER;
                             floatViewLayoutParams.x = 0;
                             floatViewLayoutParams.y = 0;
                             floatView.setFocusable(true);
                             windowManager.addView(floatView, floatViewLayoutParams);
+                            richEditor.setEditorBackgroundColor(Color.TRANSPARENT);
+                            richEditor.setBackgroundColor(Color.TRANSPARENT);
 
 
                             floatView.setOnTouchListener(new View.OnTouchListener() {
@@ -372,270 +353,6 @@ public class WidgetService extends Service {
                                         btnLock.setImageResource(ic_write_activity_lock_solid);
                                     } else {
                                         btnLock.setImageResource(R.drawable.ic_write_activity_lock_selected);
-                                    }
-                                }
-                            });
-
-
-                            btnFontSize.setOnClickListener(view1 -> {
-
-                                //팝업윈도우 구현
-                                PopupWindow popupWindow = new PopupWindow(view1);
-                                LayoutInflater inflater1 = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                View inflateView = inflater1.inflate(R.layout.write_layout_fontsize, null);
-                                popupWindow.setContentView(inflateView);
-                                popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                                //팝업윈도우 파라미터
-                                popupWindow.setAnimationStyle(R.style.Animation_AppCompat_Dialog); // 안드로이드 기본 애니메이션임. 이걸 넣어야 상향일때 애니메이션이 적용됨.
-                                popupWindow.setTouchable(true);
-                                popupWindow.setFocusable(true); //팝업 뷰 포커스도 주고
-                                popupWindow.update();
-                                popupWindow.setOutsideTouchable(true); //팝업 뷰 이외에도 터치되게 (터치시 팝업 닫기 위한 코드)
-                                popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-//                popupWindow.showAsDropDown(btnFontSize, 0, -50);
-//                popupWindow.showAtLocation(btnFontSize, Gravity.LEFT, 0,
-//                        btnFontSize.getBottom() - 60);
-                                popupWindow.showAsDropDown(btnFontSize, 0, -310);
-
-//                popupWindow.showAsDropDown(btnFontSize, 0, btnFontSize.getBottom() - 60);
-
-                                TextView tvFontSmall = inflateView.findViewById(R.id.tv_write_activity_menu_align_ledt);
-                                TextView tvFontMid = inflateView.findViewById(R.id.tv_write_activity_menu_align_center);
-                                TextView tvFontBig = inflateView.findViewById(R.id.tv_write_activity_menu_align_right);
-
-                                tvFontSmall.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view1) {
-                                        richEditor.setFontSize(3);
-                                        popupWindow.dismiss();
-                                    }
-                                });
-
-                                tvFontMid.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view1) {
-                                        richEditor.setFontSize(5);
-                                        popupWindow.dismiss();
-                                    }
-                                });
-
-                                tvFontBig.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view1) {
-                                        richEditor.setFontSize(10);
-                                        popupWindow.dismiss();
-                                    }
-                                });
-                            });
-
-                            btnColor.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    //팝업윈도우 구현
-                                    PopupWindow popupWindow = new PopupWindow(view);
-                                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    View inflateView = inflater.inflate(R.layout.write_layout_color, null);
-
-                                    popupWindow.setContentView(inflateView);
-                                    popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                                    //팝업윈도우 파라미터
-                                    popupWindow.setAnimationStyle(R.style.Animation_AppCompat_Dialog); // 안드로이드 기본 애니메이션임. 이걸 넣어야 상향일때 애니메이션이 적용됨.
-                                    popupWindow.setTouchable(true);
-                                    popupWindow.setFocusable(true); //팝업 뷰 포커스도 주고
-                                    popupWindow.update();
-                                    popupWindow.setOutsideTouchable(true); //팝업 뷰 이외에도 터치되게 (터치시 팝업 닫기 위한 코드)
-                                    popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-                                    popupWindow.showAsDropDown(btnColor, 0, -310);
-
-                                    ImageView btnMenuRed = inflateView.findViewById(R.id.tv_write_activity_menu_color_red);
-                                    btnMenuRed.setImageDrawable(getDrawable(R.drawable.write_activity_color_red));
-                                    ImageView btnMenuOrange = inflateView.findViewById(R.id.tv_write_activity_menu_color_orange);
-                                    btnMenuOrange.setImageDrawable(getDrawable(R.drawable.write_activity_color_orange));
-                                    ImageView btnMenuYellow = inflateView.findViewById(R.id.tv_write_activity_menu_color_yellow);
-                                    btnMenuYellow.setImageDrawable(getDrawable(R.drawable.write_activity_color_yellow));
-                                    ImageView btnMenuGreen = inflateView.findViewById(R.id.tv_write_activity_menu_color_green);
-                                    btnMenuGreen.setImageDrawable(getDrawable(R.drawable.write_activity_color_green));
-                                    ImageView btnMenuSky = inflateView.findViewById(R.id.tv_write_activity_menu_color_sky);
-                                    btnMenuSky.setImageDrawable(getDrawable(R.drawable.write_activity_color_sky));
-                                    ImageView btnMenuBlue = inflateView.findViewById(R.id.tv_write_activity_menu_color_blue);
-                                    btnMenuBlue.setImageDrawable(getDrawable(R.drawable.write_activity_color_blue));
-                                    ImageView btnMenuPurple = inflateView.findViewById(R.id.tv_write_activity_menu_color_purple);
-                                    btnMenuPurple.setImageDrawable(getDrawable(R.drawable.write_activity_color_purple));
-                                    ImageView btnMenuBlack = inflateView.findViewById(R.id.tv_write_activity_menu_color_black);
-                                    btnMenuBlack.setImageDrawable(getDrawable(R.drawable.write_activity_color_black));
-
-                                    btnMenuRed.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#FF4D4D"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuOrange.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#FFA94D"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuYellow.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#FFED4D"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuGreen.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#8BFF4D"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuSky.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#4DC1FF"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuBlue.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#4D65FF"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuPurple.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#A04DFF"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                    btnMenuBlack.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setTextColor(Color.parseColor("#000000"));
-                                            popupWindow.dismiss();
-
-                                        }
-                                    });
-
-                                }
-                            });
-
-                            btnAlignment.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    //팝업윈도우 구현
-                                    PopupWindow popupWindow = new PopupWindow(view);
-                                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                                    View inflateView = inflater.inflate(R.layout.write_layout_alignment, null);
-                                    popupWindow.setContentView(inflateView);
-                                    popupWindow.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-                                    //팝업윈도우 파라미터
-                                    popupWindow.setAnimationStyle(R.style.Animation_AppCompat_Dialog); // 안드로이드 기본 애니메이션임. 이걸 넣어야 상향일때 애니메이션이 적용됨.
-                                    popupWindow.setTouchable(true);
-                                    popupWindow.setFocusable(true); //팝업 뷰 포커스도 주고
-                                    popupWindow.update();
-                                    popupWindow.setOutsideTouchable(true); //팝업 뷰 이외에도 터치되게 (터치시 팝업 닫기 위한 코드)
-                                    popupWindow.setBackgroundDrawable(new BitmapDrawable());
-
-                                    popupWindow.showAsDropDown(btnAlignment, 0, -310);
-
-                                    TextView tvLeft = inflateView.findViewById(R.id.tv_write_activity_menu_align_ledt);
-                                    TextView tvCenter = inflateView.findViewById(R.id.tv_write_activity_menu_align_center);
-                                    TextView tvRight = inflateView.findViewById(R.id.tv_write_activity_menu_align_right);
-
-                                    tvLeft.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setAlignLeft();
-                                        }
-                                    });
-
-                                    tvCenter.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setAlignCenter();
-                                        }
-                                    });
-
-                                    tvRight.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            richEditor.setAlignRight();
-                                        }
-                                    });
-                                }
-                            });
-
-                            btnBold.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    if (boldSwitch == false) {
-                                        boldSwitch = true;
-                                        btnBold.setImageResource(ic_bold_selected);
-                                        richEditor.setBold();
-                                    } else {
-                                        boldSwitch = false;
-                                        btnBold.setImageResource(ic_bold_solid);
-                                        richEditor.setBold();
-                                    }
-                                }
-                            });
-
-                            btnCancelLine.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    if (cancelLineSwitch == false) {
-                                        cancelLineSwitch = true;
-                                        btnCancelLine.setImageResource(ic_strikethrough_selected);
-                                        richEditor.setStrikeThrough();
-                                    } else {
-                                        cancelLineSwitch = false;
-                                        btnCancelLine.setImageResource(ic_strikethrough_solid);
-                                        richEditor.setStrikeThrough();
-
-                                    }
-                                }
-                            });
-
-                            btnUnderLine.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    if (underLineSwitch == false) {
-                                        underLineSwitch = true;
-                                        btnUnderLine.setImageResource(ic_underline_selected);
-                                        richEditor.setUnderline();
-                                    } else {
-                                        underLineSwitch = false;
-                                        btnUnderLine.setImageResource(ic_underline_solid);
-                                        richEditor.setUnderline();
                                     }
                                 }
                             });

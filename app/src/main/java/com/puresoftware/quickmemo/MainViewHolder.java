@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.puresoftware.quickmemo.room.Memo;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,9 +33,9 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
     TextView tvDateLeft; // 날짜
     TextView tvTitleLeft; // 타이틀
     RichEditor tvContentLeft; // 내용
+    ImageView imgLock; // 락 여부
     ConstraintLayout cardBgLayout; // 메인 카드 백그라운드 이미지
-    //    ImageView ivMainCard; // 백그라운드 이미지
-//    ImageView ivMainCardDelete; // 삭제모드 백그라운드 이미지
+
     String TAG = MainViewHolder.class.getSimpleName();
 
     ArrayList<Memo> datas = new ArrayList<>();
@@ -49,8 +51,7 @@ public class MainViewHolder extends RecyclerView.ViewHolder {
         tvDateLeft = itemView.findViewById(R.id.tv_main_card_date_left);
         tvContentLeft = itemView.findViewById(R.id.tv_main_card_content);
         cardBgLayout = itemView.findViewById(R.id.main_card_bg);
-//        ivMainCard = itemView.findViewById(R.id.iv_main_card);
-//        ivMainCardDelete = itemView.findViewById(R.id.iv_main_card_delete);
+        imgLock = itemView.findViewById(R.id.iv_main_card_lock);
         viewMainCard = itemView.findViewById(R.id.view_main_card);
         tvContentLeft.setFocusable(false);
         tvContentLeft.setBackgroundColor(Color.TRANSPARENT);
@@ -172,6 +173,13 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
         }
     };
 
+    public void refreshData(List<Memo> memos) {
+        ArrayList<Memo> newData = (ArrayList<Memo>) memos;
+        datas.clear();
+        datas.addAll(newData);
+        notifyDataSetChanged();
+    }
+
     // back up code
 //    // search 호출 메소드
 //    @Override
@@ -286,18 +294,23 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
 
         if (!datas.get(position).star && !datas.get(position).lock) {
             holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_ex));
+            holder.imgLock.setVisibility(View.GONE);
             lockContent(0, holder, datas, position);
 
         } else if (datas.get(position).star && !datas.get(position).lock) {
             holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_impo));
+            holder.imgLock.setVisibility(View.GONE);
             lockContent(0, holder, datas, position);
 
+            // Todo: 락 이미지 (Src 타입)으로 넣기. 할일 220812
         } else if (!datas.get(position).star && datas.get(position).lock) {
-            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_ex_lock));
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_ex));
+            holder.imgLock.setVisibility(View.VISIBLE);
             lockContent(1, holder, datas, position);
 
         } else if (datas.get(position).star && datas.get(position).lock) {
-            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_impo_lock));
+            holder.cardBgLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.home_memo_impo));
+            holder.imgLock.setVisibility(View.VISIBLE);
             lockContent(1, holder, datas, position);
         }
     }

@@ -29,7 +29,9 @@ import com.puresoftware.quickmemo.room.MemoDao;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.wasabeef.richeditor.RichEditor;
 
@@ -66,6 +68,9 @@ public class WriteActivity extends AppCompatActivity {
     boolean lock;
     long timeStamp;
 
+    int maxLine;
+    int currentLine;
+
     String TAG = WriteActivity.class.getSimpleName();
 
     @Override
@@ -90,7 +95,7 @@ public class WriteActivity extends AppCompatActivity {
         MemoDao memoDao = db.dao();
 
         // 기본으로 사용할 폰트의 크기
-        richEditor.setFontSize(5);
+        richEditor.setFontSize(3);
 
 
         // 저장 후 메뉴로
@@ -287,6 +292,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#FFA94D"));
+
                         popupWindow.dismiss();
 
                     }
@@ -296,6 +302,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#FFED4D"));
+
                         popupWindow.dismiss();
 
                     }
@@ -305,6 +312,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#8BFF4D"));
+
                         popupWindow.dismiss();
 
                     }
@@ -314,6 +322,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#4DC1FF"));
+
                         popupWindow.dismiss();
 
                     }
@@ -323,6 +332,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#4D65FF"));
+
                         popupWindow.dismiss();
 
                     }
@@ -332,6 +342,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#A04DFF"));
+
                         popupWindow.dismiss();
 
                     }
@@ -341,6 +352,7 @@ public class WriteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         richEditor.setTextColor(Color.parseColor("#000000"));
+
                         popupWindow.dismiss();
 
                     }

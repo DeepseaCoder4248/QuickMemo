@@ -45,10 +45,6 @@ public interface MemoDao {
     @Delete
     void delete(Memo memo);
 
-//    // update 테이블명 set 컬럼1=값1, 컬럼2=값2
-//    @Query("UPDATE user set first_name=:first where uid=:uid")
-//    void updateFirstName(int uid, String first);
-
     @Query("UPDATE Memo set title=:title,content=:content,star=:star,lock=:lock, folder_uid=:folder where timestamp=:timestamp")
     void updateData(String title, String content, boolean star, boolean lock, long timestamp, String folder);
 
@@ -58,8 +54,6 @@ public interface MemoDao {
     @Query("UPDATE Memo set star=:star where uid=:uid")
     void updateStar(boolean star, int uid);
 
-
-
     @Insert
     void insertFolder(UserFolder userFolder);
 
@@ -68,9 +62,6 @@ public interface MemoDao {
 
     @Query("SELECT COUNT(*) FROM memo WHERE folder_uid = :folderId")
     int getFolderCount(String folderId);
-
-//    @Query("UPDATE UserFolder set count=:count where uid=:uid")
-//    void updateFolderCount(int count, int uid);
 
     @Delete
     void deleteFolder(UserFolder userFolder);
