@@ -99,6 +99,8 @@ public class EditActivity extends AppCompatActivity {
         beforeMemo.star = intent.getBooleanExtra("star", false);
         beforeMemo.lock = intent.getBooleanExtra("lock", false);
 
+        Log.i("gugu", "불러온메모:" + beforeMemo.toString());
+
         //데이터 셋업
         edtTitle.setText(beforeMemo.title);
         richEditor.setHtml(beforeMemo.content);

@@ -15,6 +15,7 @@ import com.puresoftware.quickmemo.MainActivity;
 import com.puresoftware.quickmemo.R;
 import com.puresoftware.quickmemo.artifacts.Folder;
 import com.puresoftware.quickmemo.room.AppDatabase;
+import com.puresoftware.quickmemo.room.Memo;
 import com.puresoftware.quickmemo.room.MemoDao;
 import com.puresoftware.quickmemo.room.UserFolder;
 
@@ -120,6 +121,13 @@ public class UserFolderAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void refreshItem(List<Folder> folders) {
+        ArrayList<Folder> newData = (ArrayList<Folder>) folders;
+        folderList.clear();
+        folderList.addAll(newData);
+        notifyDataSetChanged();
+    }
+
     // 리스트 비우기
     public void cleanItems() {
         folderList.clear();
@@ -127,6 +135,8 @@ public class UserFolderAdapter extends BaseAdapter {
 
     public void deleteItem(UserFolder folder) {
         folderList.remove(folder);
+        Log.d(TAG, "Size: " + folderList.size());
+        notifyDataSetChanged();
     }
 
     public void setBackground(boolean type) {

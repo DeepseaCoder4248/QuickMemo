@@ -143,8 +143,8 @@ public class PINActivity extends AppCompatActivity {
                             intent.putExtra("title", beforeMemo.title);
                             intent.putExtra("content", beforeMemo.content);
                             intent.putExtra("timestamp", beforeMemo.timestamp);
-                            intent.putExtra("lock", beforeMemo.star);
-                            intent.putExtra("star", beforeMemo.lock);
+                            intent.putExtra("lock", beforeMemo.lock);
+                            intent.putExtra("star", beforeMemo.star);
                             startActivity(intent);
                             finish();
 

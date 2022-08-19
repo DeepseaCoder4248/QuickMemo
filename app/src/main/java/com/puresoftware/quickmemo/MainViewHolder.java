@@ -280,6 +280,7 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
         return viewHolder;
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull MainViewHolder holder, int position) {
 
@@ -326,10 +327,16 @@ class Adapter extends RecyclerView.Adapter<MainViewHolder> implements Filterable
         return datas.size();
     }
 
+    public Memo getItem(int position) {
+        return datas.get(position);
+    }
+
     // MainActivity에서 데이터 가져오기
     public void setArrayData(Memo memo) {
         datas.add(memo);
     }
+
+
 
     public void filterStart(List<Memo> memos) {
         datasAll = (ArrayList<Memo>) memos;
