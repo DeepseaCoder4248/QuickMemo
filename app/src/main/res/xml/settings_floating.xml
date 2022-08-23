@@ -13,14 +13,15 @@
         android:summary=""
         android:title="기본 메모앱으로 설정" />
 
-    <Preference
-        android:defaultValue="false"
-        android:dependency="floating_status"
-        android:key="floating_difference"
-        android:summary="다른 메모앱으로 플로팅을 통해 실행이 가능합니다..
-주의! 원래대로 하려면 “기본 메모앱으로 설정”하세요."
-        android:title="다른 메모앱으로 설정"
+    <!-- 업데이트 필요 기능 -->
+    <!--    <Preference-->
+    <!--        android:defaultValue="false"-->
+    <!--        android:dependency="floating_status"-->
+    <!--        android:key="floating_difference"-->
+    <!--        android:summary="다른 메모앱으로 플로팅을 통해 실행이 가능합니다..-->
+    <!--주의! 원래대로 하려면 “기본 메모앱으로 설정”하세요."-->
+    <!--        android:title="다른 메모앱으로 설정"-->
 
-        />
+    <!--        />-->
 
 </PreferenceScreen>

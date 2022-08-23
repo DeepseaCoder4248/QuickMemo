@@ -32,18 +32,20 @@ public class AppSettingsActivity extends PreferenceActivity {
 
                 break;
 
+            // 업데이트 필요 기능
             case "key mode":
-                Toast.makeText(AppSettingsActivity.this, "현재 기능을 이용하실 수 없습니다.", Toast.LENGTH_SHORT).show();
                 break;
 
+            // 업데이트 필요 기능
             case "login":
                 intentGo(LoginActivity.class);
-
                 break;
 
+            // 업데이트 필요 기능
             case "upload":
                 break;
 
+            // 업데이트 필요 기능
             case "download":
                 break;
 

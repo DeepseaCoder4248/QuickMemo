@@ -113,31 +113,8 @@ public class SelectFolderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                setFolder(memoList, setList, folderList, memoDao, -2);
+                setFolder(memoList, setList, memoDao, folder, -2);
 
-                //// 백업코드
-//                for (int i = 0; i < setList.size(); i++) {
-//                    Memo updateMemo = memoList.get(Integer.parseInt((String) setList.get(i)));
-//                    updateMemo.folder = null; // 조건문 추가
-//
-//                    new Thread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            memoDao.updateData(updateMemo.title,
-//                                    updateMemo.content,
-//                                    updateMemo.star,
-//                                    updateMemo.lock,
-//                                    updateMemo.timestamp,
-//                                    updateMemo.folder);
-//                        }
-//                    }).start();
-//
-//                    Log.i(TAG, "folderUpdate " +
-//                            "title:" + updateMemo.title +
-//                            ",folder:" + updateMemo.folder +
-//                            ",posi:" + setList.get(i) + "");
-//                    finish();
-//                }
             }
         });
 
@@ -145,7 +122,7 @@ public class SelectFolderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-//                setFolder(memoList, setList, folderList, memoDao, -1);
+                setFolder(memoList, setList, memoDao, folder, -1);
             }
         });
 

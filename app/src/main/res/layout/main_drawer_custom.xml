@@ -44,7 +44,8 @@
                         android:text="ASDF1234 님"
                         android:textColor="#DE000000"
                         android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/tv_main_drawer_custom_Email"
@@ -52,7 +53,8 @@
                         android:layout_height="wrap_content"
                         android:text="asdf1234@gmail.com"
                         android:textColor="#99000000"
-                        android:textSize="12sp" />
+                        android:textSize="12sp"
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <LinearLayout

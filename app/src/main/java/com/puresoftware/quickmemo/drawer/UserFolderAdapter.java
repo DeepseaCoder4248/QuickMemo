@@ -2,6 +2,7 @@ package com.puresoftware.quickmemo.drawer;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,8 @@ public class UserFolderAdapter extends BaseAdapter {
     Context context;
     Activity activity;
     LinearLayout linDrawerUserFolder;
+    TextView tvDrawerUserTitle;
+    TextView tvDrawerUserCount;
 
     public void setActivity(Activity activity) {
         this.activity = activity;
@@ -52,6 +55,9 @@ public class UserFolderAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+
+        Log.i("gugu", "userFolderAdapter의 getView() 실행");
+
         if (context == null) {
             context = viewGroup.getContext();
         }
@@ -61,8 +67,8 @@ public class UserFolderAdapter extends BaseAdapter {
         }
 
         linDrawerUserFolder = view.findViewById(R.id.lin_main_drawer_user_folder);
-        TextView tvDrawerUserTitle = view.findViewById(R.id.tv_main_drawer_user_title);
-        TextView tvDrawerUserCount = view.findViewById(R.id.tv_main_drawer_user_count);
+        tvDrawerUserTitle = view.findViewById(R.id.tv_main_drawer_user_title);
+        tvDrawerUserCount = view.findViewById(R.id.tv_main_drawer_user_count);
 
         Folder folderItem = folderList.get(i);
         UserFolder folder = folderItem.getFolder();
@@ -113,6 +119,7 @@ public class UserFolderAdapter extends BaseAdapter {
 //            }
 //        });
 
+        Log.i("gugu", "userFolderAdapter의 getView() return");
         return view;
     }
 
@@ -139,12 +146,22 @@ public class UserFolderAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public int getItemSize() {
+        return folderList.size();
+    }
+
     public void setBackground(boolean type) {
+        Log.i("gugu", "오류발생");
 
         if (type == false) {
+
             linDrawerUserFolder.setBackground(null);
+            tvDrawerUserTitle.setTextColor(Color.parseColor("#DE000000"));
+            tvDrawerUserCount.setTextColor(Color.parseColor("#DE000000"));
         } else {
             linDrawerUserFolder.setBackgroundResource(R.drawable.round_retengle_folder);
+            tvDrawerUserTitle.setTextColor(Color.parseColor("#636363"));
+            tvDrawerUserCount.setTextColor(Color.parseColor("#636363"));
         }
     }
 }

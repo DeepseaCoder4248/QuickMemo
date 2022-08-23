@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="계정">
+    <!--    <PreferenceCategory android:title="계정">-->
 
-        <Preference
-            android:defaultValue="false"
-            android:key="login"
-            android:summary="로그인 후 내보내기, 가져오기를 할 수 있습니다.\n계정이 없는 경우, 이곳을 터치하여 가입하세요."
-            android:title="계정 연동" />
+    <!--        <Preference-->
+    <!--            android:defaultValue="false"-->
+    <!--            android:key="login"-->
+    <!--            android:summary="로그인 후 내보내기, 가져오기를 할 수 있습니다.\n계정이 없는 경우, 이곳을 터치하여 가입하세요."-->
+    <!--            android:title="계정 연동"-->
+    <!--            />-->
 
-        <Preference
-            android:defaultValue="false"
-            android:dependency="login"
-            android:key="upload"
-            android:summary="저장한 메모들을 업로드 합니다."
-            android:title="백업" />
+    <!--        <Preference-->
+    <!--            android:defaultValue="false"-->
+    <!--            android:dependency="login"-->
+    <!--            android:key="upload"-->
+    <!--            android:summary="저장한 메모들을 업로드 합니다."-->
+    <!--            android:title="백업" />-->
 
-        <Preference
-            android:defaultValue="false"
+    <!--        <Preference-->
+    <!--            android:defaultValue="false"-->
 
-            android:dependency="login"
-            android:key="download"
-            android:summary="저장된 메모들을 다운로드 합니다."
-            android:title="가져오기" />
+    <!--            android:dependency="login"-->
+    <!--            android:key="download"-->
+    <!--            android:summary="저장된 메모들을 다운로드 합니다."-->
+    <!--            android:title="가져오기" />-->
 
 
-    </PreferenceCategory>
+    <!--    </PreferenceCategory>-->
 
     <PreferenceCategory android:title="특수 기능">
 
@@ -37,12 +38,13 @@
  있습니다."
             android:title="플로팅 메모" />
 
-        <Preference
-            android:defaultValue="false"
-            android:key="key mode"
-            android:summary="볼륨키, 홈키, 전원키등 물리적 입력을 통해서
-메모장을 불러올 수 있습니다."
-            android:title="특수키 메모" />
+        <!-- 업데이트 필요 기능 -->
+        <!--        <Preference-->
+        <!--            android:defaultValue="false"-->
+        <!--            android:key="key mode"-->
+        <!--            android:summary="볼륨키, 홈키, 전원키등 물리적 입력을 통해서-->
+        <!--메모장을 불러올 수 있습니다."-->
+        <!--            android:title="특수키 메모" />-->
 
     </PreferenceCategory>
 

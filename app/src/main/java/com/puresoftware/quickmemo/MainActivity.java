@@ -14,6 +14,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
@@ -93,19 +94,23 @@ public class MainActivity extends Activity {
     TextView tvDrawerEmail;
     ImageView btnDrawerSettings;
 
-    // drawer-item
+    // drawer main
     LinearLayout linDrawerMain;
     ImageView imgDrawerMain;
     TextView tvDrawerMain;
+    TextView tvDrawerMainTitle;
 
-    // drawer view
+    // drawer impo
     LinearLayout linDrawerImpo;
     ImageView imgDrawerImpo;
     TextView tvDrawerImpo;
+    TextView tvDrawerImpoTitle;
 
+    // drawer trash
     LinearLayout linDrawerTrash;
     ImageView imgDrawerTrash;
     TextView tvDrawerTrash;
+    TextView tvDrawerTrashTitle;
 
     ListView lvDrawerItem;
     ImageView ivDrawerAddFolder;
@@ -191,12 +196,15 @@ public class MainActivity extends Activity {
         linDrawerMain = findViewById(R.id.lin_main_drawer_main_folder);
         imgDrawerMain = findViewById(R.id.iv_main_drawer_main_folder);
         tvDrawerMain = findViewById(R.id.iv_main_drawer_main_count);
+        tvDrawerMainTitle = findViewById(R.id.iv_main_drawer_main_title);
         linDrawerImpo = findViewById(R.id.lin_main_drawer_impo_folder);
         imgDrawerImpo = findViewById(R.id.iv_main_drawer_impo_folder);
         tvDrawerImpo = findViewById(R.id.iv_main_drawer_impo_count);
+        tvDrawerImpoTitle = findViewById(R.id.iv_main_drawer_impo_title);
         linDrawerTrash = findViewById(R.id.lin_main_drawer_trash_folder);
         imgDrawerTrash = findViewById(R.id.iv_main_drawer_trash_folder);
         tvDrawerTrash = findViewById(R.id.iv_main_drawer_trash_count);
+        tvDrawerTrashTitle = findViewById(R.id.iv_main_drawer_trash_title);
         lvDrawerItem = findViewById(R.id.lv_main_activity_drawer_list_item);
         ivDrawerAddFolder = findViewById(R.id.iv_main_drawer_add_folder);
 
@@ -217,6 +225,8 @@ public class MainActivity extends Activity {
 
         // 드로우어블 메뉴의 가장 초기모드
         linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
+        tvDrawerMainTitle.setTextColor(Color.parseColor("#862FFF"));
+        tvDrawerMain.setTextColor(Color.parseColor("#862FFF"));
         linDrawerImpo.setBackground(null);
         linDrawerTrash.setBackground(null);
         folderSelect = new HashMap<>();
@@ -231,6 +241,9 @@ public class MainActivity extends Activity {
         starList = new ArrayList<>();
         trashMemos = new ArrayList<>();
         onlyTrashMemos = new ArrayList<>();
+        userFolderAdapter = new UserFolderAdapter();
+        userFolderAdapter.setActivity(activity);
+        folders = new ArrayList<>();
 
         // Room DB 불러오기
         memoDaoThread = new Thread(new Runnable() {
@@ -606,7 +619,18 @@ public class MainActivity extends Activity {
                                 linDrawerTrash.setBackground(null);
                                 linDrawerImpo.setBackground(null);
                                 linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
-                                userFolderAdapter.setBackground(false);
+                                tvDrawerMainTitle.setTextColor(Color.parseColor("#862FFF"));
+                                tvDrawerMain.setTextColor(Color.parseColor("#862FFF"));
+                                tvDrawerImpo.setTextColor(Color.parseColor("#DE000000"));
+                                tvDrawerImpoTitle.setTextColor(Color.parseColor("#DE000000"));
+                                tvDrawerTrash.setTextColor(Color.parseColor("#DE000000"));
+                                tvDrawerTrashTitle.setTextColor(Color.parseColor("#DE000000"));
+
+                                // 폴더 사이즈가 없으면 사용이 불가능한 코드로 검증추가함.
+                                if (userFolderAdapter.getItemSize() == 0) {
+                                } else {
+                                    userFolderAdapter.setBackground(false);
+                                }
                                 drawerSwitch = 1;
                                 onBackPressed();
 
@@ -645,6 +669,13 @@ public class MainActivity extends Activity {
                                             Log.d(TAG, "Recovery Memo: " + recoveryMemo);
                                             onlyTrashMemos.remove(recoveryMemo);
                                             memoDao.updateTrash(false, recoveryMemo.getUid());
+
+//                                            for (int a = 0; a < folderMemos.size(); a++) {
+//                                                if (!recoveryMemo.folder.equals(folders.get(a).getTitle())) {
+//                                                    memoDao.updateFolder("메인", recoveryMemo.uid);
+//                                                }
+//                                            }
+
                                         } else {
                                             Memo deleteMemo = memos.stream().filter(memo -> memo.uid == adapter.getItem(idx).getUid()).findFirst().get();
                                             Log.d(TAG, "Delete Memo: " + deleteMemo);
@@ -766,7 +797,17 @@ public class MainActivity extends Activity {
                                                         linDrawerTrash.setBackground(null);
                                                         linDrawerImpo.setBackground(null);
                                                         linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
-                                                        userFolderAdapter.setBackground(false);
+                                                        tvDrawerMainTitle.setTextColor(Color.parseColor("#862FFF"));
+                                                        tvDrawerMain.setTextColor(Color.parseColor("#862FFF"));
+                                                        tvDrawerImpo.setTextColor(Color.parseColor("#DE000000"));
+                                                        tvDrawerImpoTitle.setTextColor(Color.parseColor("#DE000000"));
+                                                        tvDrawerTrash.setTextColor(Color.parseColor("#DE000000"));
+                                                        tvDrawerTrashTitle.setTextColor(Color.parseColor("#DE000000"));
+                                                        // 폴더 사이즈가 없으면 사용이 불가능한 코드로 검증추가함.
+                                                        if (userFolderAdapter.getItemSize() == 0) {
+                                                        } else {
+                                                            userFolderAdapter.setBackground(false);
+                                                        }
                                                         drawerSwitch = 1;
                                                     }
                                                 });
@@ -1037,7 +1078,17 @@ public class MainActivity extends Activity {
                         linDrawerMain.setBackgroundResource(R.drawable.round_retengle_main);
                         linDrawerImpo.setBackground(null);
                         linDrawerTrash.setBackground(null);
-                        userFolderAdapter.setBackground(false);
+                        tvDrawerMainTitle.setTextColor(Color.parseColor("#862FFF"));
+                        tvDrawerMain.setTextColor(Color.parseColor("#862FFF"));
+                        tvDrawerImpo.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerImpoTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerTrash.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerTrashTitle.setTextColor(Color.parseColor("#DE000000"));
+                        // 폴더 사이즈가 없으면 사용이 불가능한 코드로 검증추가함.
+                        if (userFolderAdapter.getItemSize() == 0) {
+                        } else {
+                            userFolderAdapter.setBackground(false);
+                        }
                         drawerSwitch = 1;
                         menuNavi.closeDrawer(drawerView);
                         tvMainCardCount.setText(memos.size() + "개의 메모");
@@ -1068,7 +1119,18 @@ public class MainActivity extends Activity {
                         linDrawerMain.setBackground(null);
                         linDrawerImpo.setBackgroundResource(R.drawable.round_retengle_impo);
                         linDrawerTrash.setBackground(null);
-                        userFolderAdapter.setBackground(false);
+                        tvDrawerMainTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerMain.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerImpo.setTextColor(Color.parseColor("#FF2F2F"));
+                        tvDrawerImpoTitle.setTextColor(Color.parseColor("#FF2F2F"));
+                        tvDrawerTrash.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerTrashTitle.setTextColor(Color.parseColor("#DE000000"));
+
+                        // 폴더 사이즈가 없으면 사용이 불가능한 코드로 검증추가함.
+                        if (userFolderAdapter.getItemSize() == 0) {
+                        } else {
+                            userFolderAdapter.setBackground(false);
+                        }
                         drawerSwitch = 2;
                         folderSelect.keySet().forEach(s -> folderSelect.put(s, false));
                         menuNavi.closeDrawer(drawerView);
@@ -1089,19 +1151,30 @@ public class MainActivity extends Activity {
                             folderMemos = trashMemos.stream().filter(memo -> memo.isTrash == true).collect(Collectors.toList());
                             adapter.setArrayDatas((ArrayList<Memo>) folderMemos);
                             adapter.notifyDataSetChanged();
-
                             vEmpty.setVisibility(View.GONE);
+                            tvMainCardCount.setText(folderMemos.size() + "개의 메모");
+
                         }
                         // 드로우어블 메뉴의 중요
                         linDrawerMain.setBackground(null);
                         linDrawerImpo.setBackground(null);
                         linDrawerTrash.setBackgroundResource(R.drawable.round_retengle_trash);
-                        userFolderAdapter.setBackground(false);
+                        tvDrawerMainTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerMain.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerImpo.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerImpoTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerTrash.setTextColor(Color.parseColor("#2F7BFF"));
+                        tvDrawerTrashTitle.setTextColor(Color.parseColor("#2F7BFF"));
+
+                        // 폴더 사이즈가 없으면 사용이 불가능한 코드로 검증추가함.
+                        if (userFolderAdapter.getItemSize() == 0) {
+                        } else {
+                            userFolderAdapter.setBackground(false);
+                        }
                         drawerSwitch = 3;
                         folderSelect.keySet().forEach(s -> folderSelect.put(s, false));
 
                         menuNavi.closeDrawer(drawerView);
-                        tvMainCardCount.setText(folderMemos.size() + "개의 메모");
 
                         Log.i("gugu", "휴지통");
                     }
@@ -1160,8 +1233,15 @@ public class MainActivity extends Activity {
 
                         // 드로우어블 메뉴의 중요
                         linDrawerMain.setBackground(null);
+                        tvDrawerMainTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerMain.setTextColor(Color.parseColor("#DE000000"));
                         linDrawerImpo.setBackground(null);
+                        tvDrawerImpoTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerImpo.setTextColor(Color.parseColor("#DE000000"));
                         linDrawerTrash.setBackground(null);
+                        tvDrawerTrashTitle.setTextColor(Color.parseColor("#DE000000"));
+                        tvDrawerTrash.setTextColor(Color.parseColor("#DE000000"));
+
                         drawerSwitch = 4;
                         for (String s : folderSelect.keySet()) {
                             folderSelect.put(s, false);

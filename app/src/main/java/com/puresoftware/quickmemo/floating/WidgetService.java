@@ -168,7 +168,7 @@ public class WidgetService extends Service {
             long startCkickTime;
 
             // 클릭으로 볼 최대시간
-            int MAX_CLICK_DURATION = 200;
+            int MAX_CLICK_DURATION = 300;
 
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -201,7 +201,7 @@ public class WidgetService extends Service {
                         layoutParams.y = initialy + (int) (motionEvent.getRawY() - initialTouchY);
 
                         // 사용자가 플로팅 위젯을 제거 이미지로 끌어다 놓으면 서비스를 중지합니다.
-                        if (clickDuration >= MAX_CLICK_DURATION) {
+                        if (clickDuration >= MAX_CLICK_DURATION) { // 클릭이 약 200밀리세컨 / 내가보기엔 1000밀리세컨이 맞음.
                             // 제거 이미지 주변 거리
                             if (layoutParams.y > (height * 0.8)) {
                                 stopSelf();
@@ -218,145 +218,147 @@ public class WidgetService extends Service {
                                 layoutParams.x = (int) width; // R값에 고정값 대신 View의 Right를 가져옴. 해당코드는 따로 예제를 다시 만들어야 한다.
                                 windowManager.updateViewLayout(mFloatingView, layoutParams);
                             }
-                        }
+                        }else{
+                            // 플로팅으로 writeActivity띄우기
+                            if (!isInit) {
+                                isInit = true;
+                                LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 
-                        // 플로팅으로 writeActivity띄우기
-                        if (!isInit) {
-                            isInit = true;
-                            LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
-
-                            floatView = (ViewGroup) inflater.inflate(R.layout.floating_write, null); // 서비스 실행 시 View 를 새로 Inflate 한다.
+                                floatView = (ViewGroup) inflater.inflate(R.layout.floating_write, null); // 서비스 실행 시 View 를 새로 Inflate 한다.
 //                        Toast.makeText(WidgetService.this, "이것은 액션 업입니다.", Toast.LENGTH_SHORT).show();
-                            floatViewLayoutParams = new WindowManager.LayoutParams(
-                                    ((int) (width * 0.9f)), // 축소 될때 윈도우 해상도 값. X축
-                                    ((int) (height * 0.8f)), // 축소 될때 윈도우 해상도 값. Y축
-                                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-                                    0,
-                                    PixelFormat.TRANSLUCENT
-                            );
+                                floatViewLayoutParams = new WindowManager.LayoutParams(
+                                        ((int) (width * 0.9f)), // 축소 될때 윈도우 해상도 값. X축
+                                        ((int) (height * 0.8f)), // 축소 될때 윈도우 해상도 값. Y축
+                                        WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                                        0,
+                                        PixelFormat.TRANSLUCENT
+                                );
 
-                            btnBack = floatView.findViewById(R.id.btn_floating_write_back);
-                            btnBack.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_back_ios_24));
-                            edtTitle = floatView.findViewById(R.id.edt_floating_write_title);
-                            btnStar = floatView.findViewById(R.id.btn_floating_write_star);
-                            btnStar.setImageDrawable(getDrawable(R.drawable.ic_write_activity_star_regular));
-                            btnLock = floatView.findViewById(R.id.btn_floating_write_lock);
-                            btnLock.setImageDrawable(getDrawable(R.drawable.ic_write_activity_lock_solid));
-                            richEditor = floatView.findViewById(R.id.v_floating_write_richeditor);
+                                btnBack = floatView.findViewById(R.id.btn_floating_write_back);
+                                btnBack.setImageDrawable(getDrawable(R.drawable.ic_baseline_arrow_back_ios_24));
+                                edtTitle = floatView.findViewById(R.id.edt_floating_write_title);
+                                btnStar = floatView.findViewById(R.id.btn_floating_write_star);
+                                btnStar.setImageDrawable(getDrawable(R.drawable.ic_write_activity_star_regular));
+                                btnLock = floatView.findViewById(R.id.btn_floating_write_lock);
+                                btnLock.setImageDrawable(getDrawable(R.drawable.ic_write_activity_lock_solid));
+                                richEditor = floatView.findViewById(R.id.v_floating_write_richeditor);
 
-                            // 기본으로 사용할 폰트의 크기
-                            richEditor.setFontSize(5);
-                            floatViewLayoutParams.gravity = Gravity.CENTER;
-                            floatViewLayoutParams.x = 0;
-                            floatViewLayoutParams.y = 0;
-                            floatView.setFocusable(true);
-                            windowManager.addView(floatView, floatViewLayoutParams);
-                            richEditor.setEditorBackgroundColor(Color.TRANSPARENT);
-                            richEditor.setBackgroundColor(Color.TRANSPARENT);
-
-
-                            floatView.setOnTouchListener(new View.OnTouchListener() {
-                                final WindowManager.LayoutParams updateWindowParam = floatViewLayoutParams;
-                                double x = 0.0;
-                                double y = 0.0;
-                                double px = 0.0;
-                                double py = 0.0;
+                                // 기본으로 사용할 폰트의 크기
+                                richEditor.setFontSize(5);
+                                floatViewLayoutParams.gravity = Gravity.CENTER;
+                                floatViewLayoutParams.x = 0;
+                                floatViewLayoutParams.y = 0;
+                                floatView.setFocusable(true);
+                                windowManager.addView(floatView, floatViewLayoutParams);
+                                richEditor.setEditorBackgroundColor(Color.TRANSPARENT);
+                                richEditor.setBackgroundColor(Color.TRANSPARENT);
 
 
-                                @Override
-                                public boolean onTouch(View v, MotionEvent event) {
-                                    switch (event.getAction()) {
-                                        case MotionEvent.ACTION_DOWN:
-                                            x = (double) updateWindowParam.x;
-                                            y = (double) updateWindowParam.y;
-
-                                            px = (double) event.getRawX();
-                                            py = (double) event.getRawY();
-                                            break;
-                                        case MotionEvent.ACTION_MOVE:
-                                            updateWindowParam.x = (int) (x + event.getRawX() - px);
-                                            updateWindowParam.y = (int) (y + event.getRawY() - py);
-                                            windowManager.updateViewLayout(floatView, updateWindowParam);
-                                            break;
-                                    }
-
-                                    return false;
-                                }
-                            });
+                                floatView.setOnTouchListener(new View.OnTouchListener() {
+                                    final WindowManager.LayoutParams updateWindowParam = floatViewLayoutParams;
+                                    double x = 0.0;
+                                    double y = 0.0;
+                                    double px = 0.0;
+                                    double py = 0.0;
 
 
-                            btnBack.setOnClickListener(v -> {
-                                // RoomDB 객체
-                                AppDatabase db = AppDatabase.getInstance(getBaseContext());
-                                MemoDao memoDao = db.dao();
-
-                                new Thread(new Runnable() {
                                     @Override
-                                    public void run() {
+                                    public boolean onTouch(View v, MotionEvent event) {
+                                        switch (event.getAction()) {
+                                            case MotionEvent.ACTION_DOWN:
+                                                x = (double) updateWindowParam.x;
+                                                y = (double) updateWindowParam.y;
 
+                                                px = (double) event.getRawX();
+                                                py = (double) event.getRawY();
+                                                break;
+                                            case MotionEvent.ACTION_MOVE:
+                                                updateWindowParam.x = (int) (x + event.getRawX() - px);
+                                                updateWindowParam.y = (int) (y + event.getRawY() - py);
+                                                windowManager.updateViewLayout(floatView, updateWindowParam);
+                                                break;
+                                        }
+
+                                        return false;
                                     }
                                 });
 
-                                String title = edtTitle.getText().toString().trim();
-                                String content = richEditor.getHtml();
-                                boolean star = starSwitch;
-                                boolean lock = lockSwitch;
-                                long timeStamp = System.currentTimeMillis();
 
-                                // 외부라이브러리에서 TextNull은 TextUtils.isEmpty로 해야 함.
-                                if (title.trim().equals("") && TextUtils.isEmpty(content)) {
-                                    Log.i(TAG, "memo null");
-                                } else {
+                                btnBack.setOnClickListener(v -> {
+                                    // RoomDB 객체
+                                    AppDatabase db = AppDatabase.getInstance(getBaseContext());
+                                    MemoDao memoDao = db.dao();
+
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Memo memo = new Memo();
-
-                                            memo.title = title;
-                                            memo.content = content;
-                                            memo.lock = lock;
-                                            memo.star = star;
-                                            memo.timestamp = timeStamp;
-                                            memoDao.insert(memo);
-
-
-                                            Log.i(TAG, "memoData:" + memo.toString());
-                                            Log.i(TAG, "memo completed");
 
                                         }
-                                    }).start();
-                                }
-                                windowManager.removeView(floatView);
-                                isInit = false;
-                            });
+                                    });
 
-                            btnStar.setOnClickListener(v -> {
+                                    String title = edtTitle.getText().toString().trim();
+                                    String content = richEditor.getHtml();
+                                    boolean star = starSwitch;
+                                    boolean lock = lockSwitch;
+                                    long timeStamp = System.currentTimeMillis();
 
-                                starSwitch = !starSwitch;
-                                Log.i(TAG, "starSwitch status: " + starSwitch + "");
-
-                                if (starSwitch == false) {
-                                    btnStar.setImageResource(ic_write_activity_star_regular);
-                                } else {
-                                    btnStar.setImageResource(ic_write_activity_star_selected);
-                                }
-                            });
-
-                            btnLock.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-
-                                    lockSwitch = !lockSwitch;
-                                    Log.i(TAG, "starSwitch status: " + lockSwitch + "");
-
-                                    if (lockSwitch == false) {
-                                        btnLock.setImageResource(ic_write_activity_lock_solid);
+                                    // 외부라이브러리에서 TextNull은 TextUtils.isEmpty로 해야 함.
+                                    if (title.trim().equals("") && TextUtils.isEmpty(content)) {
+                                        Log.i(TAG, "memo null");
                                     } else {
-                                        btnLock.setImageResource(R.drawable.ic_write_activity_lock_selected);
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Memo memo = new Memo();
+
+                                                memo.title = title;
+                                                memo.content = content;
+                                                memo.lock = lock;
+                                                memo.star = star;
+                                                memo.timestamp = timeStamp;
+                                                memoDao.insert(memo);
+
+
+                                                Log.i(TAG, "memoData:" + memo.toString());
+                                                Log.i(TAG, "memo completed");
+
+                                            }
+                                        }).start();
                                     }
-                                }
-                            });
+                                    windowManager.removeView(floatView);
+                                    isInit = false;
+                                });
+
+                                btnStar.setOnClickListener(v -> {
+
+                                    starSwitch = !starSwitch;
+                                    Log.i(TAG, "starSwitch status: " + starSwitch + "");
+
+                                    if (starSwitch == false) {
+                                        btnStar.setImageResource(ic_write_activity_star_regular);
+                                    } else {
+                                        btnStar.setImageResource(ic_write_activity_star_selected);
+                                    }
+                                });
+
+                                btnLock.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+
+                                        lockSwitch = !lockSwitch;
+                                        Log.i(TAG, "starSwitch status: " + lockSwitch + "");
+
+                                        if (lockSwitch == false) {
+                                            btnLock.setImageResource(ic_write_activity_lock_solid);
+                                        } else {
+                                            btnLock.setImageResource(R.drawable.ic_write_activity_lock_selected);
+                                        }
+                                    }
+                                });
+                            }
                         }
+
+
                         return true;
 
                     case MotionEvent.ACTION_MOVE:

@@ -45,13 +45,19 @@ public class SettingsFloatingActivity extends PreferenceActivity {
         switch (key) {
             case "floating_default": // 기본 플로팅
                 if (intent != null) { // 스위치가 켜저 있다면 인텐트는 그대로 유지되고 있다.
-                    stopService(intent);
-                    startService(intent);
-                    settingsEditor.putString("mode", "default");
-                    settingsEditor.commit();
+
+                    // 권한이 받아져 있는 지 확인 후 없으면 고대로 권한창 이동.
+                    if (!Settings.canDrawOverlays(SettingsFloatingActivity.this)) {
+                    } else {
+                        stopService(intent);
+                        startService(intent);
+                        settingsEditor.putString("mode", "default");
+                        settingsEditor.commit();
+                    }
                 }
                 break;
 
+            // 업데이트 필요 기능
             case "floating_difference": // 앱 선택해주는 AppChooser
                 if (intent != null) { // 스위치가 켜저 있다면 인텐트는 그대로 유지되고 있다.
                     Intent i = new Intent(Intent.ACTION_SEND);
@@ -59,7 +65,6 @@ public class SettingsFloatingActivity extends PreferenceActivity {
                     i.putExtra(Intent.EXTRA_TEXT, "메모 내용");
                     i.setType("text/plain");
                     startActivity(Intent.createChooser(i, "실행"));
-
                     settingsEditor.putString("mode", "difference");
                     settingsEditor.commit();
                 }
@@ -68,7 +73,6 @@ public class SettingsFloatingActivity extends PreferenceActivity {
         }
         return false;
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,6 @@ public class SettingsFloatingActivity extends PreferenceActivity {
                 });
     }
 
-
     // M 버전(안드로이드 6.0 마시멜로우 버전) 보다 같거나 큰 API에서만 설정창 이동 가능
     public void getpermission() {
         // 지금 창이 오버레이 설정창이 아니라면
@@ -127,7 +130,6 @@ public class SettingsFloatingActivity extends PreferenceActivity {
             startActivityForResult(intent, 1);
         }
     }
-
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -138,8 +140,7 @@ public class SettingsFloatingActivity extends PreferenceActivity {
         if (requestCode == 1) {
             // 권한을 사용할 수없는 경우 알림 표시
             if (!Settings.canDrawOverlays(SettingsFloatingActivity.this)) {
-
-                Toast.makeText(this, "Permission denied by user", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "Permission denied by user");
             }
         }
     }
