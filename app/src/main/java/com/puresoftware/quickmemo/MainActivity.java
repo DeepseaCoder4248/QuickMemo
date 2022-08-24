@@ -665,22 +665,27 @@ public class MainActivity extends Activity {
                                         // trash모드가 아니면 휴지통, 아니면 복원
                                         Log.d(TAG, "Trash is null?? " + linDrawerTrash.getBackground() + " Now: " + drawerSwitch);
                                         if (drawerSwitch == 3) {
-                                            Memo recoveryMemo = onlyTrashMemos.stream().filter(memo -> memo.uid == adapter.getItem(idx).getUid()).findFirst().get();
-                                            Log.d(TAG, "Recovery Memo: " + recoveryMemo);
-                                            onlyTrashMemos.remove(recoveryMemo);
-                                            memoDao.updateTrash(false, recoveryMemo.getUid());
 
-//                                            for (int a = 0; a < folderMemos.size(); a++) {
-//                                                if (!recoveryMemo.folder.equals(folders.get(a).getTitle())) {
-//                                                    memoDao.updateFolder("메인", recoveryMemo.uid);
-//                                                }
-//                                            }
+                                            try {
+                                                Memo recoveryMemo = onlyTrashMemos.stream().filter(memo -> memo.uid == adapter.getItem(idx).getUid()).findFirst().get();
+                                                Log.d(TAG, "Recovery Memo: " + recoveryMemo);
+                                                onlyTrashMemos.remove(recoveryMemo);
+                                                memoDao.updateTrash(false, recoveryMemo.getUid());
+
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
 
                                         } else {
-                                            Memo deleteMemo = memos.stream().filter(memo -> memo.uid == adapter.getItem(idx).getUid()).findFirst().get();
-                                            Log.d(TAG, "Delete Memo: " + deleteMemo);
-                                            memos.remove(deleteMemo); //// 이녀석이 문제임.
-                                            memoDao.updateTrash(true, deleteMemo.getUid());
+
+                                            try {
+                                                Memo deleteMemo = memos.stream().filter(memo -> memo.uid == adapter.getItem(idx).getUid()).findFirst().get();
+                                                Log.d(TAG, "Delete Memo: " + deleteMemo);
+                                                memos.remove(deleteMemo); //// 이녀석이 문제임.
+                                                memoDao.updateTrash(true, deleteMemo.getUid());
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     }
                                     set.clear();
@@ -1191,8 +1196,9 @@ public class MainActivity extends Activity {
 
                         for (UserFolder folder : folders) {
                             int folderCnt = memoDao.getFolderCount(folder.title);
-                            Log.d(TAG, "Count: " + folderCnt);
+                            Log.d(TAG, "Folder Count: " + folderCnt);
                             Folder item = new Folder(folder, folderCnt);
+                            Log.i(TAG, "Folder Object:" + item.toString());
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

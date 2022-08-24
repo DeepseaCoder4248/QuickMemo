@@ -56,8 +56,6 @@ public class UserFolderAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
 
-        Log.i("gugu", "userFolderAdapter의 getView() 실행");
-
         if (context == null) {
             context = viewGroup.getContext();
         }
@@ -88,16 +86,17 @@ public class UserFolderAdapter extends BaseAdapter {
             setBackground(false);
         }
 
-        Log.d(TAG, "Folder: " + folderItem);
+        // 여기까지 데이터를 정확하게 받아온다.
 
         AppDatabase db = AppDatabase.getInstance(context);
         MemoDao memoDao = db.dao();
 
         AsyncTask.execute(() -> {
             int cnt = memoDao.getFolderCount(folder.title);
+            String title = folder.title;
 
             activity.runOnUiThread(() -> {
-                tvDrawerUserTitle.setText(folder.getTitle());
+                tvDrawerUserTitle.setText("title");
                 tvDrawerUserCount.setText(String.valueOf(cnt));
             });
         });
@@ -119,7 +118,6 @@ public class UserFolderAdapter extends BaseAdapter {
 //            }
 //        });
 
-        Log.i("gugu", "userFolderAdapter의 getView() return");
         return view;
     }
 
