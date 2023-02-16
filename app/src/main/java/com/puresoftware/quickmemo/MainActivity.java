@@ -1114,6 +1114,7 @@ public class MainActivity extends Activity {
                             vEmpty.setVisibility(View.VISIBLE); // 비어있음 이미지 켜기
                             tvMainCardCount.setText("0" + "개의 메모");
 
+
                         } else {
                             vEmpty.setVisibility(View.GONE);
                             adapter.setArrayDatas((ArrayList<Memo>) folderMemos);
@@ -1455,25 +1456,27 @@ public class MainActivity extends Activity {
     // 상단 카드들의(중요,최근 카드) Lock 여부를 확인하여 그에 맞는 장소로 이동하기.
     public void lockContentTop(Memo memo) {
 
-        // 인텐트 데이터를 모아놓기
-        Intent intent = new Intent();
-        intent.putExtra("title", memo.title);
-        intent.putExtra("content", memo.content);
-        intent.putExtra("timestamp", memo.timestamp);
-        intent.putExtra("star", memo.star);
-        intent.putExtra("lock", memo.lock);
+        if (drawerSwitch != 3) {
+            // 인텐트 데이터를 모아놓기
+            Intent intent = new Intent();
+            intent.putExtra("title", memo.title);
+            intent.putExtra("content", memo.content);
+            intent.putExtra("timestamp", memo.timestamp);
+            intent.putExtra("star", memo.star);
+            intent.putExtra("lock", memo.lock);
 
-        Log.i("gugu", "지금 보낼메모:" + memo.toString());
+            Log.i("gugu", "지금 보낼메모:" + memo.toString());
 
-        // 락 모드가 true면 PIN을 입력하는 곳으로 가기.
-        if (memo.lock == true) {
-            intent.setClass(MainActivity.this, PINActivity.class);
-            startActivity(intent);
+            // 락 모드가 true면 PIN을 입력하는 곳으로 가기.
+            if (memo.lock == true) {
+                intent.setClass(MainActivity.this, PINActivity.class);
+                startActivity(intent);
 
-            // 락 모드가 false면 바로 수정창으로 가기.
-        } else {
-            intent.setClass(MainActivity.this, EditActivity.class);
-            startActivity(intent);
+                // 락 모드가 false면 바로 수정창으로 가기.
+            } else {
+                intent.setClass(MainActivity.this, EditActivity.class);
+                startActivity(intent);
+            }
         }
     }
 }

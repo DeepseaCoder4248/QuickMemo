@@ -71,6 +71,9 @@ public class UserFolderAdapter extends BaseAdapter {
         Folder folderItem = folderList.get(i);
         UserFolder folder = folderItem.getFolder();
 
+        tvDrawerUserTitle.setText(folder.title);
+        tvDrawerUserCount.setText(String.valueOf(folderItem.getFolderCnt()));
+
         Log.d(TAG, "Map: " + MainActivity.folderSelect);
         // notifyDataSetChanged 와 static 변수 메모리 관련 서로 꼬임으로 인해
         // 키에 없을 경우 색을 transparent 로 지정
@@ -88,18 +91,6 @@ public class UserFolderAdapter extends BaseAdapter {
 
         // 여기까지 데이터를 정확하게 받아온다.
 
-        AppDatabase db = AppDatabase.getInstance(context);
-        MemoDao memoDao = db.dao();
-
-        AsyncTask.execute(() -> {
-            int cnt = memoDao.getFolderCount(folder.title);
-            String title = folder.title;
-
-            activity.runOnUiThread(() -> {
-                tvDrawerUserTitle.setText("title");
-                tvDrawerUserCount.setText(String.valueOf(cnt));
-            });
-        });
 
 //        linDrawerUserFolder.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -149,7 +140,6 @@ public class UserFolderAdapter extends BaseAdapter {
     }
 
     public void setBackground(boolean type) {
-        Log.i("gugu", "오류발생");
 
         if (type == false) {
 

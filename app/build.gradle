@@ -24,6 +24,35 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // ./ - 현재
+    // ../ - 이전 폴더
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('build.properties').newDataInputStream())
+    def key = properties.getProperty('KEY')
+
+    // build realse 할때 쓰는 것.
+    signingConfigs {
+        release {
+            storeFile file("./quickmemo.jks")
+            storePassword key
+            keyAlias "buildKey"
+            keyPassword key
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+        debug {
+            storeFile file("./quickmemo.jks")
+            storePassword key
+            keyAlias "buildKey"
+            keyPassword key
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -50,12 +79,9 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:23.2.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'jp.wasabeef:richeditor-android:2.0.0'
-    
+
     // room
     def room_version = "2.4.2"
     implementation "androidx.room:room-runtime:$room_version"
     annotationProcessor "androidx.room:room-compiler:$room_version"
-
-
-
 }
